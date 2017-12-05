@@ -24,7 +24,7 @@ def getStockBySupplierID(S_id):
 
 
 @app.route('/AyudaPalJibaro/ShowAllResources/SortByResource?Rid=<int:R_id>')
-def getStockByResourceID(pid):
+def getStockByResourceID(R_id):
     return StockHandler().getStockByResourceID(R_id)
 
 
