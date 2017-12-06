@@ -1,11 +1,3 @@
- ___    ___    _____  ___              ___   
-|  _`\ (  _`\ (  _  )(  _`\    /'\_/`\(  _`\ 
-| (_) )| (_(_)| (_) || | ) |   |     || (_(_)
-| ,  / |  _)_ |  _  || | | )   | (_) ||  _)_ 
-| |\ \ | (_( )| | | || |_) |   | | | || (_( )
-(_) (_)(____/'(_) (_)(____/'   (_) (_)(____/'
-                                             
-
 Deliverables for Phase I included in this project are as follows:
 
 1) The E-R model, illustrating the data to be stored in the site. That shows the whole
