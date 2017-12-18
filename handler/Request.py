@@ -26,11 +26,11 @@ class RequestHandler:
         result['PIN_GPSC'] = row[3]
         return result
 
-    def getRequestkByResourceNameID(self, R_id):
-        return jsonify(Error="'getRequestkByResourceNameID'. FAILED Cannot connect to Database"), 404
+    def sortRequestByResourceName(self):
+        return jsonify(Error="'sortRequestByResourceName'. FAILED Cannot connect to Database"), 404
 
-        def getAllRequests(self):
-            return jsonify(Error="'getAllRequests'. FAILED Cannot connect to Database"), 404
+    def getAllRequests(self):
+        return jsonify(Error="'getAllRequests'. FAILED Cannot connect to Database"), 404
 
 
 

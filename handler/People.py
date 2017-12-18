@@ -32,7 +32,7 @@ class PeopleHandler:
     def RegisterAsPersonInNeed(self):
         return jsonify(Error="'RegisterAsPersonInNeed' FAILED. Cannot connect to Database"), 404
 
-        def registerAsSupplier(self):
-            return jsonify(Error="'registerAsSupplier' FAILED. Cannot connect to Database"), 404
+    def registerAsSupplier(self):
+        return jsonify(Error="'registerAsSupplier' FAILED. Cannot connect to Database"), 404
 
 

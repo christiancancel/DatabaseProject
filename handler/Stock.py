@@ -41,8 +41,10 @@ class StockHandler:
     def getStockByResourceID(self, R_id):
         return jsonify(Error="'getStockByResourceID'. FAILED Cannot connect to Database"), 404
 
-        def searchResource(self, R_name):
-            return jsonify(Error="'searchResource'. FAILED Cannot connect to Database"), 404
+    def searchResource(self, R_name):
+        return jsonify(Error="'searchResource'. FAILED Cannot connect to Database"), 404
 
+    def getAllResources(self):
+        return jsonify(Error="'getAllResources'. FAILED Cannot connect to Database"), 404
 
 

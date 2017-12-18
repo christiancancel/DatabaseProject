@@ -14,18 +14,21 @@ def greeting():
 
 
 @app.route('/AyudaPalJibaro/ShowAllResources')
-def getAllStock():
+def getallresources():
+    return StockHandler().getAllResources()
+
+@app.route('/AyudaPalJibaro/ShowAllStock')
+def getallstock():
     return StockHandler().getAllStock()
 
+@app.route('/AyudaPalJibaro/ShowAllStock/sortBySupplierId/<int:s_id>')
+def getstockbysupplierid(s_id):
+    return StockHandler().getStockBySupplierID(s_id)
 
-@app.route('/AyudaPalJibaro/ShowAllResources/SortBySupplier?Sid=<int:S_id>')
-def getStockBySupplierID(S_id):
-    return StockHandler().getStockBySupplierID(S_id)
 
-
-@app.route('/AyudaPalJibaro/ShowAllResources/SortByResource?Rid=<int:R_id>')
-def getStockByResourceID(R_id):
-    return StockHandler().getStockByResourceID(R_id)
+@app.route('/AyudaPalJibaro/ShowAllStock/sortByResourceId/<int:r_id>')
+def getStockByResourceID(r_id):
+    return StockHandler().getStockByResourceID(r_id)
 
 
 @app.route('/AyudaPalJibaro/RegisterAsAdmin')
@@ -78,19 +81,19 @@ def Reserve():
     return TransactionHandler().Reserve()
 
 
-@app.route('/AyudaPalJibaro/ShowAllRequests/SortByResourceName?Rid=<int:R_id>')
-def getRequestkByResourceNameID(R_id):
-    return RequestHandler().getRequestkByResourceNameID(R_id)
+@app.route('/AyudaPalJibaro/ShowAllRequests/SortByResourceName')
+def getRequestkByResourceNameID():
+    return RequestHandler().sortRequestByResourceName()
 
 
 @app.route('/AyudaPalJibaro/RegisterAsSupplier')
 def registerAsSupplier():
-    return PeopleHandler().RegisterAsSupplier()
+    return PeopleHandler().registerAsSupplier()
 
 
-@app.route('/AyudaPalJibaro/Resource=<R_name>')
-def searchGivenResource(R_name):
-    return StockHandler().searchResource(R_name)
+@app.route('/AyudaPalJibaro/searchResourceInStock/<string:R_name>')
+def searchGivenResource(r_name):
+    return StockHandler().searchResource(r_name)
 
 
 @app.route('/AyudaPalJibaro/RequestedResources')

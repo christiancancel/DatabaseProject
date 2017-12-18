@@ -20,8 +20,8 @@ class StatisticHandler:
     def WeeklyMatching(self):
         return jsonify(Error="'WeeklyMatching' FAILED. Cannot connect to Database"), 404
 
-        def regionResourcesInNeed(self):
-            return jsonify(Error="'regionResourcesInNeed' FAILED. Cannot connect to Database"), 404
+    def regionResourcesInNeed(self):
+        return jsonify(Error="'regionResourcesInNeed' FAILED. Cannot connect to Database"), 404
 
     def regionResourcesAvailable(self):
         return jsonify(Error="'regionResourcesAvailable' FAILED. Cannot connect to Database"), 404
