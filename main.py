@@ -1,8 +1,6 @@
 from flask import Flask, jsonify, request
-from handler.Stock import StockHandler
-from handler.People import PeopleHandler
-from handler.Statistic import StatisticHandler
-from handler.Transaction import TransactionHandler
+from handler.People import peopleHandler
+from handler.Product import producthandler
 from handler.Request import RequestHandler
 
 app = Flask(__name__)
@@ -13,108 +11,144 @@ def greeting():
     return 'Hello, Welcome to: Ayuda pal Jibaro! A backend system for disaster site resources locator'
 
 
-@app.route('/AyudaPalJibaro/ShowAllResources')
-def getallresources():
-    return StockHandler().getAllResources()
-
-@app.route('/AyudaPalJibaro/ShowAllStock')
-def getallstock():
-    return StockHandler().getAllStock()
-
-@app.route('/AyudaPalJibaro/ShowAllStock/sortBySupplierId/<int:s_id>')
-def getstockbysupplierid(s_id):
-    return StockHandler().getStockBySupplierID(s_id)
+# OK
+'''GET ALL PRODUCTS'''
 
 
-@app.route('/AyudaPalJibaro/ShowAllStock/sortByResourceId/<int:r_id>')
-def getStockByResourceID(r_id):
-    return StockHandler().getStockByResourceID(r_id)
+@app.route('/AyudaPalJibaro/products')
+def getAllProducts():
+    return producthandler().getAllProducts()
 
 
-@app.route('/AyudaPalJibaro/RegisterAsAdmin')
-def RegisterAsAdmin():
-    return PeopleHandler().RegisterAsAdmin()
+# OK
+'''GET PRODUCT BY ID'''
 
 
-@app.route('/AyudaPalJibaro/RegisterAsPersonInNeed')
-def RegisterAsPersonInNeed():
-    return PeopleHandler().RegisterAsPersonInNeed()
+@app.route('/AyudaPalJibaro/products/<int:p_id>')
+def getProductById(p_id):
+    return producthandler().getProductById(p_id)
 
 
-@app.route('/AyudaPalJibaro/DailyStatistics/ResourcesInNeed')
-def DailyResourcesInNeed():
-    return StatisticHandler().DailyResourcesInNeed()
+# OK
+'''GET IF AVAILABLE'''
 
 
-@app.route('/AyudaPalJibaro/DailyStatistics/ResourcesAvailable')
-def DailyResourcesAvailable():
-    return StatisticHandler().DailyResourcesAvailable()
+@app.route('/AyudaPalJibaro/products/availability/<int:p_id>')
+def getAvailabilityOfProduct(p_id):
+    return producthandler().getAvailabilityOfProduct(p_id)
 
 
-@app.route('/AyudaPalJibaro/DailyStatistics/Matching')
-def DailyMatching():
-    return StatisticHandler().DailyMatching()
+# OK
+'''BROWSE RESOURCES REQUESTED'''
 
 
-@app.route('/AyudaPalJibaro/WeeklyStatistics/ResourcesInNeed')
-def WeeklyResourcesInNeed():
-    return StatisticHandler().WeeklyResourcesInNeed()
+@app.route('/AyudaPalJibaro/products/requested')
+def browseResourcesRequested():
+    return RequestHandler().browseResourcesRequested()
 
 
-@app.route('/AyudaPalJibaro/WeeklyStatistics/ResourcesAvailable')
-def WeeklyResourcesAvailable():
-    return StatisticHandler().WeeklyResourcesAvailable()
+# OK
+'''SEARCH AVAILABLE PRODUCTS BY ATRIBUTE'''
 
 
-@app.route('/AyudaPalJibaro/WeeklyStatistics/Matching')
-def WeeklyMatching():
-    return StatisticHandler().WeeklyMatching()
+@app.route('/AyudaPalJibaro/products/available')
+def browseResourcesAvailable():
+    if not request.args:
+        return producthandler().browseResourcesAvailable()
+    else:
+        return producthandler().searchProductByAvailability(request.args)
 
 
-@app.route('/AyudaPalJibaro/Transaction/Purchase')
-def Purchase():
-    return TransactionHandler().Purchase()
+#
+'''CHECK PRODUCTS IN REQUESTS'''
 
 
-@app.route('/AyudaPalJibaro/Transaction/Reserve')
-def Reserve():
-    return TransactionHandler().Reserve()
+@app.route('/AyudaPalJibaro/request')
+def getAllRequest():
+    if not request.args:
+        return RequestHandler().getAllRequest()
+    else:
+        return RequestHandler().searchProductByRequests(request.args)
 
 
-@app.route('/AyudaPalJibaro/ShowAllRequests/SortByResourceName')
-def getRequestkByResourceNameID():
-    return RequestHandler().sortRequestByResourceName()
+# OK
+'''FIND PRODUCT BY DISTRICT'''
 
 
-@app.route('/AyudaPalJibaro/RegisterAsSupplier')
-def registerAsSupplier():
-    return PeopleHandler().registerAsSupplier()
+@app.route('/AyudaPalJibaro/products/district')
+def findSpecificProduct(p_id, district):
+    if not request.args:
+        return producthandler().getAllProducts()
+    else:
+        return producthandler().findSpecificProduct(request.args)
 
 
-@app.route('/AyudaPalJibaro/searchResourceInStock/<string:R_name>')
-def searchGivenResource(r_name):
-    return StockHandler().searchResource(r_name)
+'''GET ALL PEOPLE IN NEED'''
 
 
-@app.route('/AyudaPalJibaro/RequestedResources')
-def getAllRequests():
-    return RequestHandler().getAllRequests()
+@app.route('/AyudaPalJibaro/ShowAllPeopleInNeed')
+def getAllPIN():
+    return peopleHandler().getAllPeopleInNeed()
 
 
-@app.route('/AyudaPalJibaro/RegionStatistics/ResourcesInNeed')
-def regionResourcesInNeed():
-    return StatisticHandler().regionResourcesInNeed()
+'''GET ALL SUPPLIERS'''
 
 
-@app.route('/AyudaPalJibaro/RegionStatistics/ResourcesAvailable')
-def regionResourcesAvailable():
-    return StatisticHandler().regionResourcesAvailable()
+@app.route('/AyudaPalJibaro/ShowAllSuppliers')
+def getAllSuppliers():
+    return peopleHandler().getAllSuppliers()
 
 
-@app.route('/AyudaPalJibaro/RegionStatistics/Matching')
-def regionMatching():
-    return StatisticHandler().regionMatching()
+'''GET ALL ADMIN'''
 
+
+@app.route('/AyudaPalJibaro/ShowAllAdmin')
+def getAllAdmin():
+    return peopleHandler().getAllAdminstrators()
+
+
+'''GET PRODUCTS BY SUPPLIER'''
+
+
+@app.route('/AyudaPalJibaro/GetProductsBySupplier')
+def getProductsBySupplier():
+    if not request.args:
+        return producthandler().getAllProducts()
+    else:
+        return peopleHandler().getProductsBySupplier(request.args)
+
+
+'''GET SUPPLIERS BY PRODUCT'''
+
+
+@app.route('/AyudaPalJibaro/GetSupplierByProduct')
+def getSupplierByProduct():
+    if not request.args:
+        return peopleHandler().getAllSuppliers()
+    else:
+        return peopleHandler().getSupplierByProduct(request.args)
+
+
+'''GET ORDERS BY PERSON IN NEED'''
+
+
+@app.route('/AyudaPalJibaro/GetOrdersByPerson')
+def getOrdersByPerson():
+    if not request.args:
+        return peopleHandler().getAllOrders()
+    else:
+        return peopleHandler().getOrdersByPersonInNeed(request.args)
+
+
+'''GET ORDERS BY SUPPLIER'''
+
+
+@app.route('/AyudaPalJibaro/GetOrdersBySupplier')
+def getOrdersBySupplier():
+    if not request.args:
+        return peopleHandler().getAllOrders()
+    else:
+        return peopleHandler().getOrdersBySupplier(request.args)
 
 if __name__ == '__main__':
     app.run()

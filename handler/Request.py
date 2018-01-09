@@ -1,38 +1,88 @@
 from flask import jsonify
-
+from dao.request import RequestDAO
 
 class RequestHandler:
-    def build_REQUEST_dict(self, row):
+    def build_request_dict(self, row):
         result = {}
-        result['R_id'] = row[0]
-        result['ST_id'] = row[1]
-        result['PIN_id'] = row[2]
+        result['r_id'] = row[0]
+        result['r_name'] = row[1]
+        result['r_qty'] = row[2]
+        result['r_date'] = row[3]
         return result
 
-    def build_stock_dict(self, row):
+    def build_product(self, row):
         result = {}
-        result['ST_id'] = row[0]
-        result['S_id'] = row[1]
-        result['R_id'] = row[2]
-        result['ST_Res'] = row[3]
-        result['ST_Qty'] = row[4]
+        result['pr_id'] = row[0]
+        result['pr_name'] = row[1]
+        result['pr_qty'] = row[2]
+        result['pr_unit'] = row[3]
+        result['pr_category'] = row[4]
+        result['pr_priceperunit'] = row[5]
         return result
 
-    def build_PIN_dict(self, row):
+    def build_pin_dict(self, row):
         result = {}
-        result['PIN_id'] = row[0]
-        result['PIN_Name'] = row[1]
-        result['PIN_Location'] = row[2]
-        result['PIN_GPSC'] = row[3]
+        result['pid'] = row[0]
+        result['p_fname'] = row[1]
+        result['p_lname'] = row[2]
+        result['p_street_apt_urb'] = row[3]
+        result['p_city'] = row[4]
+        result['p_zipcode'] = row[5]
+        result['p_country'] = row[6]
+        result['p_phone'] = row[7]
         return result
 
-    def sortRequestByResourceName(self):
-        return jsonify(Error="'sortRequestByResourceName'. FAILED Cannot connect to Database"), 404
+    def getAllRequest(self):
+        dao = RequestDAO()
+        request_list = dao.getAllRequest()
+        result_list = []
+        for row in request_list:
+            result = self.build_request_dict(row)
+            result_list.append(result)
+        return jsonify(Request=result_list)
 
-    def getAllRequests(self):
-        return jsonify(Error="'getAllRequests'. FAILED Cannot connect to Database"), 404
+    def browseResourcesRequested(self):
+        dao = RequestDAO()
+        request_list = dao.browseResourcesRequested()
+        result_list = []
+        for row in request_list:
+            result = self.build_request_dict(row)
+            result_list.append(result)
+        return jsonify(Request=result_list)
 
+    def browseResourcesAvailable(self):
+        dao = RequestDAO()
+        request_list = dao.browseResourcesAvailable()
+        result_list = []
+        for row in request_list:
+            result = self.build_request_dict(row)
+            result_list.append(result)
+        return jsonify(Request=result_list)
 
+    def searchProductByRequests(self, args):
+        r_id = args.get("r_id")
+        r_pname = args.get("r_pname")
+        r_date = args.get("r_date")
+        r_qty = args.get("r_qty")
+        dao = RequestDAO()
+        product_list = []
+        if(len(args) == 1) and r_id:
+            product_list = dao.browseResourcesRequestedByr_id(r_id)
+
+        elif (len(args) == 1) and r_pname:
+            product_list = dao.browseResourcesRequestedByr_pname(r_pname)
+
+        elif (len(args) == 1) and r_date:
+            product_list = dao.browseResourcesRequestedByDate(r_date)
+        elif (len(args) == 1) and r_qty:
+            product_list = dao.browseResourcesRequestedByQty(r_qty)
+        else:
+            return jsonify(error="malformed query string"), 400
+        result_list = []
+        for row in product_list:
+            result = self.build_product(row)
+            result_list.append(result)
+        return jsonify(Request=product_list)
 
 
 
