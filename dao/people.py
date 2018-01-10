@@ -46,7 +46,9 @@ class peopledao:
 
     def getAllOrders(self):
         cursor = self.conn.cursor()
-        query = "select * from orders natural inner join orderdetails;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier;"
+
         cursor.execute(query)
         result = []
         for row in cursor:
@@ -79,7 +81,7 @@ class peopledao:
 
     def getProductsBySupplierFullName(self, s_fname, s_lname):
         cursor = self.conn.cursor()
-        query = "select p_id, ct_id, s_id, p_name, p_qty, p_unit, p_priceperunit from suppliers natural inner join product s_fname = %s and s_lname = %s;"
+        query = "select p_id, ct_id, s_id, p_name, p_qty, p_unit, p_priceperunit from supplier natural inner join product where s_fname = %s and s_lname = %s;"
         cursor.execute(query, (s_fname, s_lname))
         result = []
         for row in cursor:
@@ -121,7 +123,9 @@ class peopledao:
 
     def getOrdersByPersonInNeedById(self, pin_id):
         cursor = self.conn.cursor()
-        query = "select * from orderdetails natural inner join orders where pin_id = %s;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier " \
+                "where pin.pin_id = %s;"
         cursor.execute(query, (pin_id,))
         result = []
         for row in cursor:
@@ -132,7 +136,9 @@ class peopledao:
 
     def getOrdersByPersonInNeedByFirstName(self, pin_fname):
         cursor = self.conn.cursor()
-        query = "select * from orderdetails natural inner join orders where pin_fname = %s;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier " \
+                "where pin.pin_fname = %s;"
         cursor.execute(query, (pin_fname,))
         result = []
         for row in cursor:
@@ -143,7 +149,9 @@ class peopledao:
 
     def getOrdersByPersonInNeedByFullName(self, pin_fname, pin_lname):
         cursor = self.conn.cursor()
-        query = "select * from orderdetails natural inner join orders where pin_fname = %s and pin_lname = %s;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier " \
+                "where pin.pin_fname = %s and pin.pin_lname = %s;"
         cursor.execute(query, (pin_fname, pin_lname))
         result = []
         for row in cursor:
@@ -154,7 +162,9 @@ class peopledao:
 
     def getOrdersBySupplierById(self, s_id):
         cursor = self.conn.cursor()
-        query = "select * from orderdetails natural inner join orders where s_id = %s;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier " \
+                "where supplier.s_id = %s;"
         cursor.execute(query, (s_id,))
         result = []
         for row in cursor:
@@ -165,7 +175,10 @@ class peopledao:
 
     def getOrdersBySuppplierByFirstName(self, s_fname):
         cursor = self.conn.cursor()
-        query = "select * from orderdetails natural inner join orders where s_fname = %s;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier " \
+                "where supplier.s_fname = %s;"
+
         cursor.execute(query, (s_fname,))
         result = []
         for row in cursor:
@@ -177,7 +190,9 @@ class peopledao:
     def getOrdersBySupplierByFullName(self, s_fname, s_lname):
 
         cursor = self.conn.cursor()
-        query = "select * from orderdetails natural inner join orders where s_fname = %s and s_lname = %s;"
+        query = "select o_id, od_id, od_qty, od_pprice, s_id, ba_id, p_id, p_name, pin_id, pin_fname, pin_lname, c_id, o_date " \
+                "from orders natural inner join orderdetails natural inner join product natural inner join pin natural inner join supplier " \
+                "where supplier.s_fname = %s and supplier.s_lname = %s;"
         cursor.execute(query, (s_fname, s_lname))
         result = []
         for row in cursor:

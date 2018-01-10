@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
-from handler.People import peopleHandler
-from handler.Product import producthandler
-from handler.Request import RequestHandler
+from handler.people import peopleHandler
+from handler.product import producthandler
+from handler.request import RequestHandler
 
 app = Flask(__name__)
 
@@ -53,13 +53,8 @@ def browseResourcesRequested():
 
 @app.route('/AyudaPalJibaro/products/available')
 def browseResourcesAvailable():
-    if not request.args:
         return producthandler().browseResourcesAvailable()
-    else:
-        return producthandler().searchProductByAvailability(request.args)
 
-
-#
 '''CHECK PRODUCTS IN REQUESTS'''
 
 
@@ -76,7 +71,7 @@ def getAllRequest():
 
 
 @app.route('/AyudaPalJibaro/products/district')
-def findSpecificProduct(p_id, district):
+def findSpecificProduct():
     if not request.args:
         return producthandler().getAllProducts()
     else:
@@ -132,7 +127,7 @@ def getSupplierByProduct():
 '''GET ORDERS BY PERSON IN NEED'''
 
 
-@app.route('/AyudaPalJibaro/GetOrdersByPerson')
+@app.route('/AyudaPalJibaro/GetOrdersByPersonInNeed')
 def getOrdersByPerson():
     if not request.args:
         return peopleHandler().getAllOrders()

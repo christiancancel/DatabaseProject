@@ -19,6 +19,15 @@ class ProductDAO:
             result.append(row)
         return result
 
+    def browseResourcesAvailable(self):
+        cursor = self.conn.cursor()
+        query = "select * from product where p_qty > 0 order by p_name;"
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
     def getProductById(self, p_id):
         cursor = self.conn.cursor()
         query = "select * from product where p_id = %s;"
@@ -114,7 +123,8 @@ class ProductDAO:
 
     def getProductsBySubcategory(self, sct_type):
         cursor = self.conn.cursor()
-        query = "select * from product natural inner join category natural inner join IsSubcategory where sct_type = %s order by p_name;"
+        query = "select * from product natural inner join category natural inner join IsSubcategory " \
+                "where sct_type = %s order by p_name;"
         cursor.execute(query, (sct_type,))
         result = []
         for row in cursor:
@@ -123,7 +133,8 @@ class ProductDAO:
 
     def findProductByDistrict(self, district):
         cursor = self.conn.cursor()
-        query = "select * from product natural inner join supplier natural inner join addresses where p_id = %s and district = %s;"
+        query = "select * from product natural inner join supplier natural inner join addresses " \
+                "where p_id = %s and district = %s;"
         cursor.execute(query, (district,))
         result = []
         for row in cursor:
@@ -132,34 +143,37 @@ class ProductDAO:
 
     def findSpecificProduct(self, p_id, district):
         cursor = self.conn.cursor()
-        query = "select * from product natural inner join supplier natural inner join addresses where p_id = %s and district = %s;"
+        query = "select * from product natural inner join supplier natural inner join addresses " \
+                "where p_id = %s and district = %s;"
         cursor.execute(query, (p_id, district))
         result = []
         for row in cursor:
             result.append(row)
         return result
 
-    def insert(self, pname, pcolor, pmaterial, pprice):
-        cursor = self.conn.cursor()
-        query = "insert into parts(pname, pcolor, pmaterial, pprice) values (%s, %s, %s, %s) returning pid;"
-        cursor.execute(query, (pname, pcolor, pmaterial, pprice,))
-        pid = cursor.fetchone()[0]
-        self.conn.commit()
-        return pid
+    #NOT YET
 
-
-    def delete(self, pid):
-        cursor = self.conn.cursor()
-        query = "delete from parts where pid = %s;"
-        cursor.execute(query, (pid,))
-        self.conn.commit()
-        return pid
-
-
-    def update(self, pid, pname, pcolor, pmaterial, pprice):
-        cursor = self.conn.cursor()
-        query = "update parts set pname = %s, pcolor = %s, pmaterial = %s, pprice = %s where pid = %s;"
-        cursor.execute(query, (pname, pcolor, pmaterial, pprice, pid,))
-        self.conn.commit()
-        return pid
-
+    # def insert(self, pname, pcolor, pmaterial, pprice):
+    #     cursor = self.conn.cursor()
+    #     query = "insert into parts(pname, pcolor, pmaterial, pprice) values (%s, %s, %s, %s) returning pid;"
+    #     cursor.execute(query, (pname, pcolor, pmaterial, pprice,))
+    #     pid = cursor.fetchone()[0]
+    #     self.conn.commit()
+    #     return pid
+    #
+    #
+    # def delete(self, pid):
+    #     cursor = self.conn.cursor()
+    #     query = "delete from parts where pid = %s;"
+    #     cursor.execute(query, (pid,))
+    #     self.conn.commit()
+    #     return pid
+    #
+    #
+    # def update(self, pid, pname, pcolor, pmaterial, pprice):
+    #     cursor = self.conn.cursor()
+    #     query = "update parts set pname = %s, pcolor = %s, pmaterial = %s, pprice = %s where pid = %s;"
+    #     cursor.execute(query, (pname, pcolor, pmaterial, pprice, pid,))
+    #     self.conn.commit()
+    #     return pid
+    #
