@@ -1,19 +1,31 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
+from flask_login import login_manager
 from handler.people import peopleHandler
 from handler.product import producthandler
 from handler.request import RequestHandler
 
 app = Flask(__name__)
-
+lm = login_manager.LoginManager()
+app.secret_key = 'medalla base'
+lm.init_app(app)
+lm.login_view = 'SignIn'
 
 @app.route('/')
 def greeting():
-    return 'Hello, Welcome to: Ayuda pal Jibaro! A backend system for disaster site resources locator'
+    #return 'Hello, Welcome to: Ayuda pal Jibaro! A backend system for disaster site resources locator'
+    return  render_template('home.html')
 
 
 # OK
 '''GET ALL PRODUCTS'''
 
+@app.route('/SignIn', methods=['GET', 'POST'])
+def SignIn():
+    if request.method == 'POST':
+        print(request.form["Password"])
+        return peopleHandler().signin(request.form["Username"], request.form["Password"])
+    else:
+        return render_template('signin.html')
 
 @app.route('/AyudaPalJibaro/products')
 def getAllProducts():
@@ -22,7 +34,7 @@ def getAllProducts():
 
 # OK
 '''GET PRODUCT BY ID'''
-
+6
 
 @app.route('/AyudaPalJibaro/products/<int:p_id>')
 def getProductById(p_id):
