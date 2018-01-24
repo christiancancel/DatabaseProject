@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+   {% if title %}
+        <title>{{ title }} - Ayuda Pal Jibaro</title>
+        {% else %}
+        <title>Welcome to Ayuda Pal Jibaro</title>
+        {% endif %}
+    </head>
+    <body>
+    <div>Ayuda Pal Jibaro: <a href="/">Home</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+</body>
+</html>
