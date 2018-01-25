@@ -1,8 +1,11 @@
-from flask import Flask, jsonify, request, render_template
-from flask_login import login_manager
+from flask import Flask, request, render_template, flash, redirect, url_for
+from flask_login import login_manager,current_user, login_user, logout_user, login_fresh
 from handler.people import peopleHandler
 from handler.product import producthandler
 from handler.request import RequestHandler
+from Forms.SigninForm import LoginForm
+from Forms.SignupForm import SignupForm
+from Forms.user import User
 
 app = Flask(__name__)
 lm = login_manager.LoginManager()
@@ -10,22 +13,68 @@ app.secret_key = 'medalla base'
 lm.init_app(app)
 lm.login_view = 'SignIn'
 
+
+@lm.user_loader
+def load_user(id):
+    return User().get_user(id)
+
+
 @app.route('/')
-def greeting():
+def home():
     #return 'Hello, Welcome to: Ayuda pal Jibaro! A backend system for disaster site resources locator'
     return  render_template('home.html')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = LoginForm()
+    username = form.username.data
+    if form.validate_on_submit():
+        password=peopleHandler().login(username)
+        if password is None or not password[0]==form.password.data:
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        user=User()
+        user.set_user(username)
+        login_user(user, remember=False)
+        return render_template('base.html', title='logged in')
+    return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/SignUp', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+    if form.validate_on_submit():
+        username = form.username.data()
+        password = form.password.data()
+        fname = form.fname.data()
+        lname = form.lname.data()
+        phone = form.phone.data()
+        address = form.address.data()
+        city = form.city.data()
+        country = form.country.data()
+        district = form.district.data()
+        zipcode = form.district.data()
+        user_type = form.user_type.data()
+        signedup = peopleHandler().signup(username, password, fname, lname, phone, address, city, country,
+                                          district, zipcode, user_type)
+        if not signedup:
+            flash('Signed Up Failed')
+            return redirect(url_for('signup'))
+        user=User()
+        user.set_user(username)
+        login_user(user, remember=False)
+        flash('Sign up successful for user {}'.format(form.username.data))
+        return redirect(url_for('login'))
+    return render_template('signup.html', title='Sign Up', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 # OK
 '''GET ALL PRODUCTS'''
-
-@app.route('/SignIn', methods=['GET', 'POST'])
-def SignIn():
-    if request.method == 'POST':
-        print(request.form["Password"])
-        return peopleHandler().signin(request.form["Username"], request.form["Password"])
-    else:
-        return render_template('signin.html')
 
 @app.route('/AyudaPalJibaro/products')
 def getAllProducts():

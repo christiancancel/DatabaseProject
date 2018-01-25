@@ -21,7 +21,7 @@ class RequestDAO:
 
     def browseResourcesRequested(self):
         cursor = self.conn.cursor()
-        query = "select * from request natural inner join pin;"
+        query = "select * from request natural inner join ain;"
         cursor.execute(query)
         result = []
         for row in cursor:

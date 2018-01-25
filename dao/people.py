@@ -199,6 +199,88 @@ class peopledao:
             result.append(row)
         return result
 
+    def checkusername(self, us):
+        cursor = self.conn.cursor()
+        query = "select a_password from account where a_username = %s"
+        cursor.execute(query, (us,))
+        result = cursor.fetchone()
+        return result
+
+    def getUserProfile(self, personid):
+        cursor = self.conn.cursor()
+        query = "Select s_fname, s_lname, s_phone, addressline1, city, country, district, zipcode " \
+                "from account as ac natural inner join supplier as sup natural inner join addresses as ad "\
+                "where ac.a_id = sup.sa_id "\
+                "AND sup.saddress_id = ad.address_id "\
+                "AND sup.s_id = %s;"
+        cursor.execute(query, (personid,))
+        result = cursor.fetchone()
+        return result
+
+    def getUserKeys(self, username):
+        cursor = self.conn.cursor()
+        query = "Select s_id, address_id, a_id, a_username, a_password " \
+                "from account natural inner join supplier natural inner join addresses "\
+                "where account.a_id = supplier.sa_id "\
+                "AND supplier.saddress_id = addresses.address_id "\
+                "AND account.a_username = %s;"
+        cursor.execute(query, (username,))
+        result = cursor.fetchone()
+        account_type = "supplier"
+        if result:
+            result.append(account_type)
+            return result
+        cursor = self.conn.cursor()
+        query = "Select pin_id, address_id, a_id, a_username, a_password " \
+                "from account natural inner join pin natural inner join addresses " \
+                "where account.a_id = pin.pina_id " \
+                "AND pin.pinaddress_id = addresses.address_id " \
+                "AND account.a_username = %s;"
+        cursor.execute(query, (username,))
+        result = cursor.fetchone()
+        account_type = "pin"
+        if result:
+            result.append(account_type)
+            return result
+        cursor = self.conn.cursor()
+        query = "Select ad_id, address_id, a_id, a_username, a_password " \
+                "from account natural inner join admins natural inner join addresses " \
+                "where account.a_id = admins.ada_id " \
+                "AND admins.adaddress_id = addresses.address_id " \
+                "AND account.a_username = %s;"
+        cursor.execute(query, (username,))
+        result = cursor.fetchone()
+        account_type = "admin"
+        result.append(account_type)
+        return result
+
+    def get_account_id(self,us):
+        cursor=self.conn.cursor()
+        query = "select a_id from account where a_username = %s;"
+        cursor.execute(query, (us,))
+        result = cursor.fetchone()
+        return result
+
+    def get_person_id(self, a_id):
+        cursor = self.conn.cursor()
+        query="select pin_id from pin where pina_id = %s;"
+        cursor.execute(query, (a_id,))
+        result = cursor.fetchone()
+        if not result[0] ==None:
+            return result[0]
+        query="select s_id from supplier where sa_id = %s;"
+        cursor.execute(query, (a_id,))
+        result = cursor.fetchone()
+        if not result[0] == None:
+            return result[0]
+        query = "select ad_id from admins where ada_id = %s;"
+        cursor.execute(query, (a_id,))
+        result = cursor.fetchone()
+        if not result[0] == None:
+            return result[0]
+        return None
+
+
     ''' not specified in phase 2 specs'''
     '''def getRequestsbypersoninneed(self, pin_id):
         cursor = self.conn.cursor()

@@ -6,7 +6,7 @@ class producthandler:
         result = {}
         result['p_id'] = row[0]
         result['p_ct'] = row[1]
-        result['p_s'] = row[2]
+        result['s_id'] = row[2]
         result['p_name'] = row[3]
         result['p_qty'] = row[4]
         result['p_unit'] = row[5]
@@ -26,7 +26,7 @@ class producthandler:
         result['pin_fname'] = row[1]
         result['pin_lname'] = row[2]
         result['a_id'] = row[3]
-        result['adressid'] = row[4]
+        result['addressid'] = row[4]
         result['pin_phone'] = row[5]
         return result
 
@@ -36,7 +36,7 @@ class producthandler:
         result['ad_fname'] = row[1]
         result['ad_lname'] = row[2]
         result['a_id'] = row[3]
-        result['adressid'] = row[4]
+        result['addressid'] = row[4]
         result['s_phone'] = row[5]
         return result
 

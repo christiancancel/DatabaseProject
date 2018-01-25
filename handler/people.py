@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, render_template
 from dao.people import peopledao
 
 class peopleHandler:
@@ -190,4 +190,29 @@ class peopleHandler:
             result_list.append(result)
         return jsonify(OrdersBySupplier=result_list)
 
+    def signin(self, us, pw):
+        username = us
+        password = pw
+        dao = peopledao()
+        result = dao.checkusername(username)
+        if result == None:
+            return jsonify(error="Username does not exist.")
+        if password== result[0]:
+            return render_template('signinsuccess.html', title='Home', user=us)
+        else:
+            return jsonify(error="Incorrect Password.")
 
+    def login(self, us):
+        return peopledao().checkusername(us)
+
+    def get_person_id(self, username):
+        dao = peopledao()
+        account=dao.get_account_id(username)
+        print("account id ", account[0])
+        if account==None:
+            return False
+        result=dao.get_person_id(account[0])
+        print("person id ", result)
+        if result==None:
+            return False
+        return result[0]
