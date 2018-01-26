@@ -38,7 +38,7 @@ def login():
     if form.validate_on_submit():
         password=peopleHandler().login(username)
         if password is None or not password[0]==form.password.data:
-            flash('Invalid username or password')
+            flash('Invalid username or password', category='error')
             return redirect(url_for('login'))
         user=User()
         user.set_user(username)
@@ -61,9 +61,13 @@ def signup():
         district = form.district.data
         zipcode = form.zipcode.data
         user_type = form.user_type.data
-        signedup = peopleHandler().signup(username, password, fname, lname, phone, address, city, country,
+        check_if_taken = peopleHandler().login(username)
+        if check_if_taken:
+            flash('That username is already taken', category='error')
+            return redirect(url_for('signup'))
+        signed_up = peopleHandler().signup(username, password, fname, lname, phone, address, city, country,
                                           district, zipcode, user_type)
-        if not signedup:
+        if not signed_up:
             flash('Signed Up Failed')
             return redirect(url_for('signup'))
         user=User()

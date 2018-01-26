@@ -4,13 +4,13 @@ from dao.product import ProductDAO
 class producthandler:
     def build_product(self, row):
         result = {}
-        result['p_id'] = row[0]
-        result['p_ct'] = row[1]
-        result['s_id'] = row[2]
-        result['p_name'] = row[3]
-        result['p_qty'] = row[4]
-        result['p_unit'] = row[5]
-        result['p_priceperunit'] = row[6]
+        result['Product I`d'] = row[0]
+        result['Category'] = row[1]
+        result['Supplier Id'] = row[2]
+        result['Product Name'] = row[3]
+        result['Quantity'] = row[4]
+        result['Unit'] = row[5]
+        result['Price Per Unit'] = str(row[6]) + '$'
         return result
 
     def build_category(self, row):
@@ -56,10 +56,7 @@ class producthandler:
         for row in product_list:
             result = self.build_product(row)
             result_list.append(result)
-
-        #result_list = json.dumps(result_list, separators=(', ', ':') )
-
-        return render_template('test.html', result_list=result_list) #jsonify(Product=result_list) separators=(', ', ':')
+        return render_template('test.html', result_list=result_list)
 
     def getAvailabilityOfProduct(self, p_id):
         dao = ProductDAO()
