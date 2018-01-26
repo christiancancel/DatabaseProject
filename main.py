@@ -18,11 +18,16 @@ lm.login_view = 'SignIn'
 def load_user(id):
     return User().get_user(id)
 
-
 @app.route('/')
 def home():
-    #return 'Hello, Welcome to: Ayuda pal Jibaro! A backend system for disaster site resources locator'
-    return  render_template('home.html')
+    if current_user.is_anonymous:
+        return  render_template('home.html')
+    else:
+        return redirect(url_for('userhome'))
+
+@app.route('/UserHome')
+def userhome():
+    return render_template('userhome.html', account=current_user.user_type)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -38,24 +43,24 @@ def login():
         user=User()
         user.set_user(username)
         login_user(user, remember=False)
-        return render_template('base.html', title='logged in')
+        return render_template('userhome.html', title='logged in')
     return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/SignUp', methods=['GET', 'POST'])
 def signup():
     form = SignupForm()
     if form.validate_on_submit():
-        username = form.username.data()
-        password = form.password.data()
-        fname = form.fname.data()
-        lname = form.lname.data()
-        phone = form.phone.data()
-        address = form.address.data()
-        city = form.city.data()
-        country = form.country.data()
-        district = form.district.data()
-        zipcode = form.district.data()
-        user_type = form.user_type.data()
+        username = form.username.data
+        password = form.password.data
+        fname = form.fname.data
+        lname = form.lname.data
+        phone = form.phone.data
+        address = form.address.data
+        city = form.city.data
+        country = form.country.data
+        district = form.district.data
+        zipcode = form.zipcode.data
+        user_type = form.user_type.data
         signedup = peopleHandler().signup(username, password, fname, lname, phone, address, city, country,
                                           district, zipcode, user_type)
         if not signedup:
@@ -64,14 +69,58 @@ def signup():
         user=User()
         user.set_user(username)
         login_user(user, remember=False)
-        flash('Sign up successful for user {}'.format(form.username.data))
-        return redirect(url_for('login'))
+        return render_template('base.html', title='signed up')
     return render_template('signup.html', title='Sign Up', form=form)
 
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+@app.route('/products/add', methods=['GET', 'POST'])
+def add_product():
+    return True
+
+
+@app.route('/products/announce', methods=['GET', 'POST'])
+def announce_product():
+    return True
+
+
+@app.route('/products/ask', methods=['GET', 'POST'])
+def ask_product():
+    return True
+
+
+@app.route('/products/buy', methods=['GET', 'POST'])
+def buy_product():
+    return True
+
+
+@app.route('/products/viewTransactions', methods=['GET', 'POST'])
+def view_transactions():
+    return True
+
+
+@app.route('/products/addCreditCard', methods=['GET', 'POST'])
+def add_creditcard():
+    return True
+
+
+@app.route('/products/addBankInfo', methods=['GET', 'POST'])
+def add_bank_info():
+    return True
+
+
+@app.route('/products/updateProduct', methods=['GET', 'POST'])
+def update_product():
+    return True
+
+
+@app.route('/products/updateCreditCard', methods=['GET', 'POST'])
+def update_creditcard():
+    return True
+
 
 # OK
 '''GET ALL PRODUCTS'''

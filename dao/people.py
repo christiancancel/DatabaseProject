@@ -228,7 +228,7 @@ class peopledao:
         result = cursor.fetchone()
         account_type = "supplier"
         if result:
-            result.append(account_type)
+            result = result + (account_type,)
             return result
         cursor = self.conn.cursor()
         query = "Select pin_id, address_id, a_id, a_username, a_password " \
@@ -240,7 +240,7 @@ class peopledao:
         result = cursor.fetchone()
         account_type = "pin"
         if result:
-            result.append(account_type)
+            result = result + (account_type,)
             return result
         cursor = self.conn.cursor()
         query = "Select ad_id, address_id, a_id, a_username, a_password " \
@@ -251,7 +251,7 @@ class peopledao:
         cursor.execute(query, (username,))
         result = cursor.fetchone()
         account_type = "admin"
-        result.append(account_type)
+        result = result + (account_type,)
         return result
 
     def get_account_id(self,us):
@@ -280,6 +280,58 @@ class peopledao:
             return result[0]
         return None
 
+    def create_account(self, us, pw):
+        cursor=self.conn.cursor()
+        query="insert into account(a_username, a_password)values(%s, %s);"
+        cursor.execute(query, (us, pw,))
+        self.conn.commit()
+        query = "select a_id from account where a_username= %s AND a_password= %s;"
+        cursor.execute(query, (us, pw,))
+        result = cursor.fetchone()
+        self.conn.commit()
+        if not result[0]==None:
+            return result[0]
+        return None
+
+    def create_address(self, address, city, country, district, zipcode):
+        cursor = self.conn.cursor()
+        query = "insert into addresses(addressline1, city, country, district, zipcode)values(%s, %s, %s, %s, %s);"
+        cursor.execute(query, (address, city, country, district, zipcode,))
+        self.conn.commit()
+        query = "select address_id from addresses where addressline1= %s AND city= %s AND country= %s " \
+                "AND district = %s AND zipcode = %s;"
+        cursor.execute(query, (address, city, country, district, zipcode,))
+        result = cursor.fetchone()
+        self.conn.commit()
+        if not result[0] == None:
+            return result[0]
+        return None
+
+    def create_supplier(self, fname, lname, phone, ac_id, address_id):
+        cursor = self.conn.cursor()
+        query = "INSERT INTO supplier(s_fname, s_lname, sa_id, saddress_id, s_phone)VALUES(%s, %s, %s, %s, %s);"
+        cursor.execute(query,(fname, lname, ac_id, address_id, phone,))
+        self.conn.commit()
+        query = "select max(s_id) from supplier where s_phone = %s;"
+        cursor.execute(query, (phone,))
+        result = cursor.fetchone()
+        self.conn.commit()
+        if not result[0] == None:
+            return result[0]
+        return None
+
+    def create_pin(self, fname, lname, phone, ac_id, address_id):
+        cursor = self.conn.cursor()
+        query = "INSERT INTO pin(pin_fname, pin_lname, pina_id, pinaddress_id, pin_phone)VALUES(%s, %s, %s, %s, %s);"
+        cursor.execute(query,(fname, lname, ac_id, address_id, phone,))
+        self.conn.commit()
+        query = "select max(pin_id) from pin where pin_phone = %s;"
+        cursor.execute(query, (phone,))
+        result = cursor.fetchone()
+        self.conn.commit()
+        if not result[0] == None:
+            return result[0]
+        return None
 
     ''' not specified in phase 2 specs'''
     '''def getRequestsbypersoninneed(self, pin_id):

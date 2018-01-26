@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, render_template, json
 from dao.product import ProductDAO
 
 class producthandler:
@@ -56,7 +56,10 @@ class producthandler:
         for row in product_list:
             result = self.build_product(row)
             result_list.append(result)
-        return jsonify(Product=result_list)
+
+        #result_list = json.dumps(result_list, separators=(', ', ':') )
+
+        return render_template('test.html', result_list=result_list) #jsonify(Product=result_list) separators=(', ', ':')
 
     def getAvailabilityOfProduct(self, p_id):
         dao = ProductDAO()

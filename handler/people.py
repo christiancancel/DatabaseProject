@@ -216,3 +216,16 @@ class peopleHandler:
         if result==None:
             return False
         return result[0]
+
+    def signup(self, username, password, fname, lname, phone, address, city, country,
+                                          district, zipcode, user_type):
+        dao = peopledao()
+        ac_id = dao.create_account(username, password)
+        address_id = dao.create_address(address, city, country, district, zipcode)
+        if user_type=="supplier":
+            sup = dao.create_supplier(fname, lname, phone, ac_id, address_id)
+            print("sup sign up", sup)
+            return sup
+        pin = dao.create_pin(fname, lname, phone, ac_id, address_id)
+        print("pin sign up", pin)
+        return pin

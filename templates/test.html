@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+   <form name ="Verify Product Id" method="get">
+
+       <b><font size="6">Updating Product:</font></b>
+  <p><b>Please enter the Product Id of the product you'd like to update:</b></p>
+
+   <fieldset><legend><b>Available Products:</b></legend>
+	<table>
+  <tr>
+    <th>Product ID :</th>
+    <th>Category ID :</th>
+    <th>Supplier ID :</th>
+      <th>Producy Name :</th>
+      <th>Quantity :</th>
+      <th>Unit :</th>
+      <th>Price Per Unit</th>
+  </table>
+
+<br><br>
+    {% for result_list in result_list %}
+    <tr><td>{{ result_list.p_id }} :</td>
+        <td>{{ result_list.p_ct }} :</td>
+        <td>{{ result_list.s_id }} :</td>
+        <td>{{ result_list.p_name }} :</td>
+        <td>{{ result_list.p_qty }} :</td>
+        <td>{{ result_list.p_unit }} :</td>
+        <td>{{ result_list.p_priceperunit }}</td>
+    </tr>
+    <br>
+    {% endfor %}
+</fieldset>
+   <br>
+   	<fieldset><legend><b>Verify ID:</b></legend>
+      Product ID: <br> <input type="number" name="p_id" placeholder="12345" required>
+      <button type="submit">Verify</button>
+    </fieldset> <br>
+  	</form>
+
+
+
+{% endblock %}

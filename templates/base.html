@@ -9,7 +9,11 @@
     <body>
         <div>
             Ayuda Pal Jibaro:
+            {% if current_user.is_anonymous %}
             <a href="{{ url_for('home') }}">Home</a>
+            {% else %}
+            <a href="{{ url_for('userhome') }}">Home</a>
+            {% endif %}
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
               <a href="{{ url_for('signup') }}">Sign Up</a>
