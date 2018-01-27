@@ -15,19 +15,22 @@ lm.login_view = 'SignIn'
 
 
 @lm.user_loader
-def load_user(id):
-    return User().get_user(id)
+def load_user(user_id):
+    return User().get_user(user_id)
+
 
 @app.route('/')
 def home():
     if current_user.is_anonymous:
-        return  render_template('home.html')
+        return render_template('home.html')
     else:
-        return redirect(url_for('userhome'))
+        return redirect(url_for('user_home'))
+
 
 @app.route('/UserHome')
-def userhome():
-    return render_template('userhome.html', account=current_user.user_type)
+def user_home():
+    return render_template('user_home.html', account=current_user.user_type)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -36,15 +39,16 @@ def login():
     form = LoginForm()
     username = form.username.data
     if form.validate_on_submit():
-        password=peopleHandler().login(username)
-        if password is None or not password[0]==form.password.data:
+        password = peopleHandler().login(username)
+        if password is None or not password[0] == form.password.data:
             flash('Invalid username or password', category='error')
             return redirect(url_for('login'))
-        user=User()
+        user = User()
         user.set_user(username)
         login_user(user, remember=False)
-        return render_template('userhome.html', title='logged in')
+        return render_template('user_home.html', title='logged in')
     return render_template('login.html', title='Sign In', form=form)
+
 
 @app.route('/SignUp', methods=['GET', 'POST'])
 def signup():
@@ -65,50 +69,93 @@ def signup():
         if check_if_taken:
             flash('That username is already taken', category='error')
             return redirect(url_for('signup'))
-        signed_up = peopleHandler().signup(username, password, fname, lname, phone, address, city, country,
-                                          district, zipcode, user_type)
+        signed_up = peopleHandler().signup(username, password, fname, lname, phone, address, city, district,
+                                           country, zipcode, user_type)
         if not signed_up:
             flash('Signed Up Failed')
             return redirect(url_for('signup'))
-        user=User()
+        user = User()
         user.set_user(username)
         login_user(user, remember=False)
         return render_template('base.html', title='signed up')
     return render_template('signup.html', title='Sign Up', form=form)
+
 
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
+
 @app.route('/products/add', methods=['GET', 'POST'])
 def add_product():
-    return True
+    if request.method == 'GET':
+        return render_template('Add_Product.html')
+    else:
+        ct_id = request.form['cat']
+        p_name = request.form['p_name']
+        p_qty = request.form['r_qty']
+        p_unit = request.form['p_unit']
+        p_ppu = request.form['p_ppu']
+        s_id = current_user.person_id
+        product = producthandler().insert_new_product(ct_id, s_id, p_name, p_qty, p_unit, p_ppu)
+        return render_template('Add_Product_Result.html', product = product)
 
 
 @app.route('/products/announce', methods=['GET', 'POST'])
 def announce_product():
-    return True
+    result_list = producthandler().AnnounceAvailability()
+    return render_template('test.html', result_list=result_list)
 
 
 @app.route('/products/ask', methods=['GET', 'POST'])
 def ask_product():
-    return True
-
+    if request.method == 'GET':
+        return render_template('Request_Product.html')
+    else:
+        print("Im in.")
+        product_name = request.form['r_pname']
+        quantity = request.form['r_qty']
+        date = request.form['r_date']
+        request_info = RequestHandler().insert_new_request(current_user.person_id, product_name, quantity, date)
+        return render_template('Added_Request_Result.html', request_info = request_info)
 
 @app.route('/products/buy', methods=['GET', 'POST'])
 def buy_product():
     return True
 
 
-@app.route('/products/viewTransactions', methods=['GET', 'POST'])
-def view_transactions():
-    return True
+@app.route('/products/pin/viewtransaction', methods=['GET', 'POST'])
+def view_transaction_pin():
+    pin_id = current_user.person_id
+    transactions = peopleHandler().getOrdersByPersonInNeed(pin_id)
+    return render_template('View_Transactions.html', transactions=transactions)
+
+
+@app.route('/products/supplier/viewtransaction', methods=['GET', 'POST'])
+def view_transaction_sup():
+    supplier = current_user.person_id
+    transactions = peopleHandler().getOrdersBySupplier(supplier)
+    return render_template('View_Transactions.html', transactions=transactions)
 
 
 @app.route('/products/addCreditCard', methods=['GET', 'POST'])
 def add_creditcard():
-    return True
+    if request.method == 'GET':
+        return render_template('Add_Payment_Method.html')
+    else:
+        c_cardtype = request.form['c_cardtype']
+        c_name = request.form['c_name']
+        c_number = request.form['c_number']
+        addressid = current_user.address_id
+        pin_id = current_user.person_id
+        verified = peopleHandler().Verify_PaymentMethod(pin_id)
+        if (verified):
+            result = peopleHandler().insert_new_cc(c_cardtype, c_number, c_name, pin_id, addressid)
+            return render_template('New_CC_Info.html', result=result)
+        else:
+            flash('Method Invalid! You already have a Credit Card registered in our system!')
+            return redirect(url_for('home'))
 
 
 @app.route('/products/addBankInfo', methods=['GET', 'POST'])
@@ -118,16 +165,62 @@ def add_bank_info():
 
 @app.route('/products/updateProduct', methods=['GET', 'POST'])
 def update_product():
-    return True
+    if request.method == 'GET':
+        result_list  = peopleHandler().getProductsBySupplier(current_user.person_id)
+        if result_list:
+            return render_template('Update_Product.html', result_list=result_list)
+        else:
+            return render_template('Update_Product.html')
+    else:
+        form = request.form['p_id']
+        p_id = form
+        form = request.form['cat']
+        c_id = form
+        form = request.form['p_name']
+        p_name = form
+        form = request.form['r_qty']
+        p_qty = form
+        form = request.form['p_unit']
+        p_unit = form
+        form = request.form['p_priceperunit']
+        p_priceperunit = form
+        s_id = current_user.person_id
+        verified = producthandler().VerifyID(p_id)
+        if (verified):
+            product = producthandler().update_product(p_id, c_id, s_id, p_name, p_qty, p_unit, p_priceperunit)
+            return render_template("Add_Product_Result.html", product=product)
+        else:
+            flash('Product Verification Failed! Try Again!')
+            return redirect(url_for('Update_Product'))
 
 
 @app.route('/products/updateCreditCard', methods=['GET', 'POST'])
 def update_creditcard():
-    return True
+    if request.method == 'GET':
+        result = peopleHandler().Verify_CCExists(current_user.person_id)
+        if result:
+            return render_template('Update_Credit_Card.html', result=result)
+        else:
+            return render_template('Update_Credit_Card.html')
+    else:
+        c_id = request.form['c_id']
+        c_cardtype = request.form['c_cardtype']
+        c_name = request.form['c_name']
+        c_number = request.form['c_number']
+        addressid = current_user.address_id
+        pin_id = current_user.person_id
+        verified = peopleHandler().Verify_CCExists(pin_id)
+        if (verified):
+            result = peopleHandler().update_cc(c_id, c_cardtype, c_number, c_name, pin_id, addressid)
+            return render_template('New_CC_Info.html', result=result)
+        else:
+            flash('Method Invalid! You do not have a Credit Card registered in our system!')
+            return redirect(url_for('home'))
 
 
 # OK
 '''GET ALL PRODUCTS'''
+
 
 @app.route('/AyudaPalJibaro/products')
 def getAllProducts():
@@ -136,7 +229,7 @@ def getAllProducts():
 
 # OK
 '''GET PRODUCT BY ID'''
-6
+
 
 @app.route('/AyudaPalJibaro/products/<int:p_id>')
 def getProductById(p_id):

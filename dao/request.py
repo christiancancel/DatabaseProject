@@ -124,3 +124,11 @@ class RequestDAO:
         self.conn.commit()
         return pid
 
+
+    def insert_new_request(self, pin_id, r_pname, r_qty, r_date):
+        cursor = self.conn.cursor()
+        query = "insert into request(pin_id, r_pname, r_qty, r_date) values (%s, %s, %s, %s) returning r_id;"
+        cursor.execute(query, (pin_id, r_pname, r_qty, r_date,))
+        request_id = cursor.fetchone()[0]
+        self.conn.commit()
+        return request_id

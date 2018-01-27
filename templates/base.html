@@ -31,7 +31,7 @@
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('home') }}">Home</a>
             {% else %}
-            <a href="{{ url_for('userhome') }}">Home</a>
+            <a href="{{ url_for('user_home') }}">Home</a>
             {% endif %}
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>

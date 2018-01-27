@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <form name ="Update_Payment_Method" method="post">
+
+    <b><font size="6">Update Credit Card</font></b>
+  <br><br>
+  <fieldset><legend><b>Current Credit Card Information:</b></legend>
+    <table style="width:100">
+          {% if result %}
+          <tr>
+          {% for key, value in result.items() %}
+
+                <th> {{ key }} </th>
+                <td> {{ value }} </td>
+            </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+  </fieldset> <br><br>
+  <b>Please enter the credit card information you wish to update: </b> <br><br>
+   <fieldset><legend><b>Credit Card Information:</b></legend>
+       Credit Card ID: <br> <input type="number" name="c_id" placeholder="1234" required>
+   <br>Credit Card Type: <br> <input type="text" name="c_cardtype" placeholder="ex. Visa" required>
+   <br>Name on Credit Card: <br> <input type="text" name="c_name" placeholder="ex. Dwight K. Shrutte" required>
+   <br>Credit Card Number: <br> <input type="number" name="c_number" placeholder="ex. 1234 5678 9101 1121" required>
+   </fieldset>
+
+   <br>
+    <button name="button" type="submit" value="update">Add</button>
+  	</form>
+
+    <b>Note:</b> You must fill out every attribute for this form. If there is an attribute you do not wish to replace, simply place the original value of it in the form. Original values are shown under "Current Credit Card Information".
+
+{% endblock %}

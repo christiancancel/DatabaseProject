@@ -333,6 +333,40 @@ class peopledao:
             return result[0]
         return None
 
+    def insert_new_cc(self, c_cardtype, c_cardname, pin_id, address_id, c_cardnumber):
+        cursor = self.conn.cursor()
+        query = "insert into creditcard(c_cardtype, c_cardname, pin_id, address_id, c_cardnumber) values (%s, %s, %s, %s, %s) returning c_id;"
+        cursor.execute(query, (c_cardtype, c_cardname, pin_id, address_id, c_cardnumber,))
+        c_id = cursor.fetchone()[0]
+        self.conn.commit()
+        return c_id
+
+    def getCreditCardByPinID(self, pin_id):
+
+        cursor = self.conn.cursor()
+        query = "Select * " \
+                "from creditcard " \
+                "where creditcard.pin_id = %s ;"
+        cursor.execute(query, (pin_id,))
+        result = cursor.fetchone()
+        return result
+
+    def update_cc(self, c_id, c_cardtype, c_cardname, pin_id, address_id, c_cardnumber):
+        cursor = self.conn.cursor()
+        query = "update creditcard set c_cardtype = %s, c_cardname = %s, pin_id = %s, address_id = %s, c_cardnumber = %s where c_id = %s;"
+        cursor.execute(query, (c_cardtype, c_cardname, pin_id, address_id, c_cardnumber, c_id,))
+        self.conn.commit()
+        return c_id
+
+    def getCreditCardByPinIDandC_ID(self, pin_id):
+        cursor = self.conn.cursor()
+        query = "Select * " \
+                "from creditcard " \
+                "where creditcard.pin_id = %s;"
+        cursor.execute(query, (pin_id,))
+        result = cursor.fetchone()
+        return result
+
     ''' not specified in phase 2 specs'''
     '''def getRequestsbypersoninneed(self, pin_id):
         cursor = self.conn.cursor()

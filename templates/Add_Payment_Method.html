@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <form name ="Add_Payment_Method" method="post">
+
+    <b><font size="6">Add Credit Card as Payment Method:</font></b>
+  <br><br>
+  Please add your credit card information below: <br><br>
+   <fieldset><legend><b>Credit Card Information:</b></legend>
+   Credit Card Type: <br> <input type="text" name="c_cardtype" placeholder="ex. Visa" required>
+   <br>Name on Credit Card: <br> <input type="text" name="c_name" placeholder="ex. Dwight K. Shrutte" required>
+   <br>Credit Card Number: <br> <input type="number" name="c_number" placeholder="ex. 1234 5678 9101 1121" required>
+</fieldset>
+
+   <br>
+    <button name="Button" type="submit" value="add">Add</button>
+  	</form>
+
+    <br><b>Note</b>: You can only have one credit card registered at a time.
+
+{% endblock %}

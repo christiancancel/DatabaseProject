@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b><font size="6">View Transactions:</font></b>
+    <br><br>
+    <fieldset><legend><b>Your Transactions:</b></legend>
+        <table style="width:50%">
+      <!-- table header -->
+      {% if transactions %}
+      <tr>
+         {% for key in transactions[0] %}
+            <th> {{ key }} </th>
+         {% endfor %}
+      </tr>
+      {% endif %}
+      {% for dict_item in transactions %}
+          <tr>
+             {% for value in dict_item.values() %}
+             <td> {{ value }} </td>
+             {% endfor %}
+          </tr>
+      {% endfor %}
+    </table>
+    </fieldset>
+{% endblock %}

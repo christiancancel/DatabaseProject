@@ -107,24 +107,18 @@ class peopleHandler:
     '''encontrar productos por supplidor '''
 
     def getProductsBySupplier(self, args):
-        s_id = args.get("s_id")
-        s_fname = args.get("s_fname")
-        s_lname = args.get("s_lname")
+        s_id = args
         dao = peopledao()
         product_list = []
-        if (len(args) == 2) and s_fname and s_lname:
-            product_list = dao.getProductsBySupplierFullName(s_fname, s_lname)
-        elif (len(args) == 1) and s_fname:
-            product_list = dao.getProductsBySupplierName(s_fname)
-        elif (len(args) == 1) and s_id:
-            product_list = dao.getProductsBySupplierId()
+        if s_id:
+            product_list = dao.getProductsBySupplierId(s_id)
         else:
             return jsonify(error="malformed query string"), 400
         result_list = []
         for row in product_list:
             result = self.build_product_dict(row)
             result_list.append(result)
-        return jsonify(ProductsBySupplier=result_list)
+        return result_list
 
     '''encontrar supplidor por producto'''
 
@@ -148,47 +142,35 @@ class peopleHandler:
     '''Encontrar las ordenes de una persona'''
 
     def getOrdersByPersonInNeed(self, args):
-        pin_id = args.get("pin_id")
-        pin_fname = args.get("pin_fname")
-        pin_lname = args.get("pin_lname")
+        pin_id = args
         dao = peopledao()
         order_list = []
-        if (len(args) == 1) and pin_id:
+        if pin_id:
             order_list = dao.getOrdersByPersonInNeedById(pin_id)
-        elif (len(args) == 1) and pin_fname:
-            order_list = dao.getOrdersByPersonInNeedByFirstName(pin_fname)
-        elif (len(args) == 2) and pin_fname and pin_lname:
-            order_list = dao.getOrdersByPersonInNeedByFullName(pin_fname, pin_lname)
         else:
             return jsonify(error="malformed query string"), 400
         result_list = []
         for row in order_list:
             result = self.build_orderinfo_dict(row)
             result_list.append(result)
-        return jsonify(OrdersByPersonInNeed=result_list)
+        return result_list
 
     '''Encontrar las ordenes de una supplier'''
 
     def getOrdersBySupplier(self, args):
-        s_id = args.get("s_id")
-        s_fname = args.get("s_fname")
-        s_lname = args.get("s_lname")
+        s_id = args
         dao = peopledao()
         order_list = []
-        if (len(args) == 1) and s_id:
+        if s_id:
             order_list = dao.getOrdersBySupplierById(s_id)
-        elif (len(args) == 1) and s_fname:
-            order_list = dao.getOrdersBySuppplierByFirstName(s_fname)
-        elif (len(args) == 2) and s_fname and s_lname:
-            order_list = dao.getOrdersBySupplierByFullName(s_fname, s_lname)
         else:
-            return jsonify(error="malformed query string"), 400
+            return order_list
         result_list = []
         for row in order_list:
             print(row)
             result = self.build_orderinfo_dict(row)
             result_list.append(result)
-        return jsonify(OrdersBySupplier=result_list)
+        return result_list
 
     def signin(self, us, pw):
         username = us
@@ -229,3 +211,47 @@ class peopleHandler:
         pin = dao.create_pin(fname, lname, phone, ac_id, address_id)
         print("pin sign up", pin)
         return pin
+
+    def Verify_PaymentMethod(self, pin_id):
+        dao = peopledao()
+        row = dao.getCreditCardByPinID(pin_id)
+        if not row:
+           return True
+        else:
+            return False
+
+    def insert_new_cc(self, c_cardtype, c_number, c_name, pin_id, addressid):
+        dao = peopledao()
+        c_id = dao.insert_new_cc(c_cardtype, c_name, pin_id, addressid, c_number)
+        result = {}
+        result['Card ID'] = c_id
+        result['Card Type'] = c_cardtype
+        result['Card Number'] = c_number
+        result['Name on the Card'] = c_name
+        result['Person Id'] = pin_id
+        result['Address Id'] = addressid
+        return result
+
+    def update_cc(self, c_id, c_cardtype, c_number, c_name, pin_id, addressid):
+        dao = peopledao()
+        c_id = dao.update_cc(c_id, c_cardtype, c_name, pin_id, addressid, c_number)
+        result = {}
+        result['Card ID'] = c_id
+        result['Card Type'] = c_cardtype
+        result['Card Number'] = c_number
+        result['Name on the Card'] = c_name
+        result['Person Id'] = pin_id
+        result['Address Id'] = addressid
+        return result
+
+    def Verify_CCExists(self, pin_id):
+        dao = peopledao()
+        row = dao.getCreditCardByPinIDandC_ID(pin_id)
+        result = {}
+        result['Card ID'] = row[0]
+        result['Card Type'] = row[1]
+        result['Name on the Card'] = row[2]
+        result['Person Id'] = row[3]
+        result['Address Id'] = row[4]
+        result['Card Number'] = row[5]
+        return result

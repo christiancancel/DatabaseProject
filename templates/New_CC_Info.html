@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+   <form name ="New Credit Card Saved" method="get">
+
+    <b><font size="6">New Credit Card Saved:</font></b>
+   <br>
+   	<fieldset><legend><b>New Credit Card Information::</b></legend>
+        <table style="width:100">
+          {% if result %}
+          <tr>
+          {% for key, value in result.items() %}
+
+                <th> {{ key }} </th>
+                <td> {{ value }} </td>
+            </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+    </fieldset> <br>
+  	</form>
+
+{% endblock %}

@@ -2,7 +2,9 @@
 
 {% block content %}
 
-   <form name ="Verify Product Id" method="get">
+   <b><font size="6">Resources Available</font></b>
+  <br><br>
+  <fieldset><legend><b>Resources Available</b></legend>
        <table style="width:50%">
           <!-- table header -->
           {% if result_list %}
@@ -23,11 +25,7 @@
           {% endfor %}
        </table>
        <br>
-        <fieldset><legend><b>Verify ID:</b></legend>
-          Product ID: <br> <input type="number" name="p_id" placeholder="Input" required>
-          <button type="submit">Verify</button>
-        </fieldset> <br>
-  	</form>
+      </fieldset> <br><br>
 
 
 

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <b><font size="6">Request has been added!</font></b>
+  <br><br>
+  <fieldset><legend><b>Request</b></legend>
+      <table style="width:100">
+          {% if request_info %}
+          {% for key, value in request_info.items() %}
+            <tr>
+                <th> {{ key }} </th>
+                <td> {{ value }} </td>
+            </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+    </fieldset>
+    <br><br>
+{% endblock %}

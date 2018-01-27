@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <form name ="Update Product" method="post">
+
+  <b><font size="6">Updating Product:</font></b>
+  <p><b>Please enter the attributes for the product:</b></p>
+
+   <fieldset><legend><b>Current Products:</b></legend>
+        <table style="width:50%">
+          <!-- table header -->
+          {% if result_list %}
+          <tr>
+             {% for key in result_list[0] %}
+             <th> {{ key }} </th>
+             {% endfor %}
+          </tr>
+          {% endif %}
+
+          <!-- table rows -->
+          {% for dict_item in result_list %}
+          <tr>
+             {% for value in dict_item.values() %}
+             <td> {{ value }} </td>
+             {% endfor %}
+          </tr>
+          {% endfor %}
+       </table>
+   </fieldset>
+   <br>
+
+   	  <fieldset><legend><b>Update Product Attributes:</b></legend>
+		Product ID: <br> <input type="number" name="p_id" placeholder="ex. 1234">
+  		<br> Category: <br> <select name="cat">
+    		<option value="1">Water ct:1</option>
+    		<option value="2">Water Small Bottle ct:2</option>
+    		<option value="3">Water 1 Gallon ct:3</option>
+    		<option value="4">Medication ct:4</option>
+            <option value="5">Food ct:5</option>
+    		<option value="6">Baby Food ct:6</option>
+    		<option value="7">Canned Food ct:7</option>
+    		<option value="8">Dry Food ct:8</option>
+            <option value="9">Ice ct:9</option>
+    		<option value="10">Fuel ct:10</option>
+    		<option value="11">Diesel ct:11</option>
+    		<option value="12">Propate ct:12</option>
+            <option value="13">Gasoline ct:13</option>
+    		<option value="14">Medical Devices ct:14</option>
+    		<option value="15">Heavy Equipment ct:15</option>
+    		<option value="16">Tools ct:16</option>
+            <option value="17">Clothing ct:17</option>
+    		<option value="18">Power Generators ct:18</option>
+    		<option value="19">Batteries ct:19</option>
+  		</select>
+  		<br>Product Name: <br> <input type="text" name="p_name" placeholder="ex. Canned Beans">
+  		<br>Quantity: <br> <input type="number" name="r_qty" placeholder="1" min="1">
+  		<br>Unit: <br> <input type="text" name="p_unit" placeholder="ex. 8oz Can">
+  		<br>Price Per Unit: <br> <input type="number" step="0.01" min="0" name="p_priceperunit" placeholder="ex. 1.50">
+  <button type="submit">Submit</button>
+  </fieldset><br>
+
+  <b>Note:</b> You must fill out every attribute for this form. If there is an attribute you do not wish to replace, simply place the original value of it in the form. Original values are shown under "Product Selected".
+  	</form>
+
+{% endblock %}

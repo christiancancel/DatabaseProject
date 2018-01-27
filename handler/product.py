@@ -4,7 +4,7 @@ from dao.product import ProductDAO
 class producthandler:
     def build_product(self, row):
         result = {}
-        result['Product I`d'] = row[0]
+        result['Product Id'] = row[0]
         result['Category'] = row[1]
         result['Supplier Id'] = row[2]
         result['Product Name'] = row[3]
@@ -56,7 +56,7 @@ class producthandler:
         for row in product_list:
             result = self.build_product(row)
             result_list.append(result)
-        return render_template('test.html', result_list=result_list)
+        return result_list
 
     def getAvailabilityOfProduct(self, p_id):
         dao = ProductDAO()
@@ -119,3 +119,45 @@ class producthandler:
             result_list.append(result)
         return jsonify(Product=result_list)
 
+    def VerifyID(self, p_id):
+        dao = ProductDAO()
+        row = dao.getProductById(p_id)
+        if not row:
+            return False
+        else:
+            return True
+
+    def insert_new_product(self, cat, sid, name, qty, unit, ppu):
+        dao = ProductDAO()
+        pid = dao.insert_new_product(cat, sid, name, qty, unit, ppu)
+        result = {}
+        result['Product Id'] = pid
+        result['Category'] = cat
+        result['Supplier Id'] = sid
+        result['Product Name'] = name
+        result['Quantity'] = qty
+        result['Unit'] = unit
+        result['Price Per Unit'] = str(ppu) + '$'
+        return result
+
+    def update_product(self, p_id, ct_id, s_id, p_name, p_qty, p_unit, p_priceperunit):
+        dao = ProductDAO()
+        p_id = dao.update_product(p_id, ct_id, s_id, p_name, p_qty, p_unit, p_priceperunit)
+        result = {}
+        result['Product Id'] = p_id
+        result['Category'] = ct_id
+        result['Supplier Id'] = s_id
+        result['Product Name'] = p_name
+        result['Quantity'] = p_qty
+        result['Unit'] = p_unit
+        result['Price Per Unit'] = str(p_priceperunit) + '$'
+        return result
+
+    def AnnounceAvailability(self):
+        dao = ProductDAO()
+        product_list = dao.getAllProductsA()
+        result_list = []
+        for row in product_list:
+            result = self.build_product(row)
+            result_list.append(result)
+        return result_list

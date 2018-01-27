@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if current_user.user_type == "pin" %}
+    <a href="{{ url_for('ask_product') }}">Submit a Request</a> <br />
+    <a href="{{ url_for('buy_product') }}">Buy Product(s)</a> <br />
+    <a href="{{ url_for('view_transaction_pin') }}">View Current Transactions</a> <br />
+    <a href="{{ url_for('add_creditcard') }}">Add a Credit Card</a> <br />
+    <a href="{{ url_for('update_creditcard') }}">Update a Credit Card</a> <br />
+    <a href="{{ url_for('announce_product') }}">Announce All Products</a> <br />
+    {% else %}
+    <a href="{{ url_for('add_product') }}">Add a Product</a> <br />
+    <a href="{{ url_for('announce_product') }}">Announce Product</a> <br />
+    <a href="{{ url_for('view_transaction_sup') }}">View Current Transactions</a> <br />
+    <a href="{{ url_for('add_bank_info') }}">Add the Bank's Information</a> <br />
+    <a href="{{ url_for('update_product') }}">Update a Product</a> <br />
+    <a href="{{ url_for('announce_product') }}">Announce All Products</a> <br />
+    {% endif %}
+
+{% endblock %}

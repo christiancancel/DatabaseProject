@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <b><font size="6">Product Added Result</font></b>
+  <br><br>
+  <fieldset><legend><b>Added The Resource</b></legend>
+      <table style="width:100">
+          {% if product %}
+          <tr>
+          {% for key, value in product.items() %}
+
+                <th> {{ key }} </th>
+                <td> {{ value }} </td>
+            </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+
+  </fieldset> <br><br>
+
+{% endblock %}
+

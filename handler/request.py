@@ -1,25 +1,17 @@
 from flask import jsonify
 from dao.request import RequestDAO
+from dao.product import ProductDAO
 
 class RequestHandler:
     def build_request_dict(self, row):
         result = {}
         result['r_id'] = row[0]
-        result['r_name'] = row[1]
-        result['r_qty'] = row[2]
-        result['r_date'] = row[3]
-        return result
-
-#pin_fname, pin_lname, r_pname, r_qty, r_date
-
-    def build_sexo_dict(self, row):
-        result = {}
-        result['pin_fname'] = row[0]
-        result['pin_lname'] = row[1]
-        result['r_pname'] = row[2]
+        result['pin_id'] = row[1]
+        result['r_name'] = row[2]
         result['r_qty'] = row[3]
         result['r_date'] = row[4]
-        return
+        return result
+
 
     def build_dict(self, row):
         result = {}
@@ -108,5 +100,17 @@ class RequestHandler:
 
         return jsonify(Request=result_list)
 
+
+
+    def insert_new_request(self, pin_id, r_pname, r_qty, r_date):
+        dao = RequestDAO()
+        r_id = dao.insert_new_request(pin_id, r_pname, r_qty, r_date)
+        result = {}
+        result["Request Id"] = r_id
+        result["Person Id"] = pin_id
+        result["Product Name"] = r_pname
+        result["Quantity"] = r_qty
+        result["Date"] = r_date
+        return result
 
 
