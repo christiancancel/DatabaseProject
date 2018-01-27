@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <form name ="Get_Product_FF" method="post">
+
+    <b><font size="6">Recieve Free Product:</font></b>
+    <br><br>
+
+   <fieldset><legend><b>Free Products Available:</b></legend>
+        <table style="width:50%">
+          <!-- table header -->
+          {% if result_list %}
+          <tr>
+             {% for key in result_list[0] %}
+             <th> {{ key }} </th>
+             {% endfor %}
+          </tr>
+          {% endif %}
+
+          <!-- table rows -->
+          {% for dict_item in result_list %}
+          <tr>
+             {% for value in dict_item.values() %}
+             <td> {{ value }} </td>
+             {% endfor %}
+          </tr>
+          {% endfor %}
+       </table>
+   </fieldset>
+   <br>
+  	<fieldset><legend><b>Select Product:</b></legend>
+      Product ID: <br> <input type="number" name="p_id" placeholder="12345" required>
+      <br>Quantity to Recieve: <br> <input type="number" name="od_qty" placeholder="1" required></fieldset><br>
+      <br>
+    <button name="Button" type="submit" value="add">Add to Cart</button>
+    <button name="Button" type="submit" value="finish">Checkout</button>
+  	</form>
+{% endblock %}

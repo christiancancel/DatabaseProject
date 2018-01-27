@@ -161,3 +161,21 @@ class producthandler:
             result = self.build_product(row)
             result_list.append(result)
         return result_list
+
+    def getPurchasableProduct(self):
+        dao = ProductDAO()
+        product_list = dao.getPurchasableProduct()
+        result_list = []
+        for row in product_list:
+            result = self.build_product(row)
+            result_list.append(result)
+        return result_list
+
+    def getFreeProduct(self):
+        dao = ProductDAO()
+        product_list = dao.getFreeProduct()
+        result_list = []
+        for row in product_list:
+            result = self.build_product(row)
+            result_list.append(result)
+        return result_list

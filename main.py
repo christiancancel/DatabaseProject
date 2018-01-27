@@ -6,6 +6,7 @@ from handler.request import RequestHandler
 from Forms.SigninForm import LoginForm
 from Forms.SignupForm import SignupForm
 from Forms.user import User
+import time
 
 app = Flask(__name__)
 lm = login_manager.LoginManager()
@@ -122,7 +123,42 @@ def ask_product():
 
 @app.route('/products/buy', methods=['GET', 'POST'])
 def buy_product():
-    return True
+    if request.method == 'GET':
+        result = peopleHandler().Verify_CCExists(current_user.person_id)
+        if result:
+            #order_id = peopleHandler().create_order(result['Card ID'], time.strftime("%d%m%Y"))
+            result_list = producthandler().getPurchasableProduct()
+            if result_list:
+                return render_template('Buy_Product.html', result_list=result_list)
+            else:
+                return render_template('Buy_Product.html')
+        else:
+            flash('Credit Card needed for this operation.')
+            return redirect(url_for('user_home'))
+    else:
+       if request.form['Button'] == "add":
+           return True
+       else:
+           return False
+
+
+@app.route('/products/getFreeProduct', methods=['GET', 'POST'])
+def get_product():
+    if request.method == 'GET':
+        result = peopleHandler().Verify_CCExists(current_user.person_id)
+        if result:
+            #order_id = peopleHandler().create_order(result['Card ID'], time.strftime("%d%m%Y"))
+            result_list = producthandler().getFreeProduct()
+            if result_list:
+                return render_template('Free_Product.html', result_list=result_list)
+            else:
+                return render_template('Free_Product.html')
+        else:
+            flash('Credit Card needed for this operation.')
+            return redirect(url_for('user_home'))
+    else:
+        flash('Could not be implemented on time')
+        return redirect(url_for('user_home'))
 
 
 @app.route('/products/pin/viewtransaction', methods=['GET', 'POST'])

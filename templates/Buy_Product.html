@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+   <form name ="Buy_Product" method="post">
+
+    <b><font size="6">Buy a Product:</font></b>
+    <br><br>
+
+   <fieldset><legend><b>Products Available for Purchase:</b></legend>
+        <table style="width:50%">
+          <!-- table header -->
+          {% if result_list %}
+          <tr>
+             {% for key in result_list[0] %}
+             <th> {{ key }} </th>
+             {% endfor %}
+          </tr>
+          {% endif %}
+
+          <!-- table rows -->
+          {% for dict_item in result_list %}
+          <tr>
+             {% for value in dict_item.values() %}
+             <td> {{ value }} </td>
+             {% endfor %}
+          </tr>
+          {% endfor %}
+       </table>
+   </fieldset>
+   <br>
+  	<fieldset><legend><b>Select Product:</b></legend>
+      Product ID: <br> <input type="number" name="p_id" placeholder="12345">
+        <br>Order Id: <br> <input name="od_qty" value="{{order_id}}"></fieldset><br>
+      <br>Quantity to Purchase: <br> <input type="number" name="od_qty" placeholder="1"><br>
+       <br>Order Id: <br> <input name="od_qty" value="{{order_id}}"></fieldset><br>
+      <br>
+    <button name="Button" type="submit" value="add">Add to Cart</button>
+    <button name="Button" type="submit" value="finish">Checkout</button>
+  	</form>
+
+{% endblock %}

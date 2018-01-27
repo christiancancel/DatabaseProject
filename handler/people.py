@@ -255,3 +255,9 @@ class peopleHandler:
         result['Address Id'] = row[4]
         result['Card Number'] = row[5]
         return result
+
+
+    def create_order(self, cid, date):
+        dao = peopledao()
+        row = dao.create_order(cid, date)
+        return row

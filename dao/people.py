@@ -367,6 +367,15 @@ class peopledao:
         result = cursor.fetchone()
         return result
 
+
+    def create_order(self, cid, date):
+        cursor = self.conn.cursor()
+        query = "insert into orders(c_id, o_date)values(%s, %s) returning o_id;"
+        cursor.execute(query, (cid, date,))
+        self.conn.commit()
+        result = cursor.fetchone()[0]
+        return result
+
     ''' not specified in phase 2 specs'''
     '''def getRequestsbypersoninneed(self, pin_id):
         cursor = self.conn.cursor()

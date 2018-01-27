@@ -176,6 +176,24 @@ class ProductDAO:
             result.append(row)
         return result
 
+    def getPurchasableProduct(self):
+        cursor = self.conn.cursor()
+        query = "select * from product where p_priceperunit >= 0.01;"
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
+    def getFreeProduct(self):
+        cursor = self.conn.cursor()
+        query = "select * from product where p_priceperunit = 0;"
+        cursor.execute(query)
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+
     #NOT YET
 
     # def insert(self, pname, pcolor, pmaterial, pprice):
