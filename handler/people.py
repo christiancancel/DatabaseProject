@@ -1,5 +1,7 @@
 from flask import jsonify
 from dao.people import peopledao
+from dao.product import ProductDAO
+
 
 class peopleHandler:
     def build_admin_dict(self, row):
@@ -7,9 +9,14 @@ class peopleHandler:
         result['ad_id'] = row[0]
         result['ad_fname'] = row[1]
         result['ad_lname'] = row[2]
-        result['a_id'] = row[3]
-        result['adressid'] = row[4]
+        result['ada_id'] = row[3]
+        result['adaddress_id'] = row[4]
         result['ad_phone'] = row[5]
+        result['addressline1'] = row[6]
+        result['city'] = row[7]
+        result['zipcode'] = row[8]
+        result['country'] = row[9]
+        result['district'] = row[10]
         return result
 
     def build_pin_dict(self, row):
@@ -43,7 +50,37 @@ class peopleHandler:
         result['p_priceperunit'] = row[6]
         return result
 
-    def build_orderinfo_dict(self, row):
+    def build_new_product(self, row):
+        result = {}
+        result['p_id'] = row[0]
+        result['ct_id'] = row[1]
+        result['s_id'] = row[2]
+        result['p_name'] = row[3]
+        result['p_qty'] = row[4]
+        result['p_unit'] = row[5]
+        result['p_priceperunit'] = row[6]
+        result['s_fname'] = row[7]
+        result['s_lname'] = row[8]
+        result['ct_type'] = row[9]
+        return result
+
+    def build_new_product_declared(self, row, input):
+        result = {}
+        result['p_id'] = row[0]
+        result['ct_id'] = row[1]
+        result['s_id'] = row[2]
+        result['p_name'] = row[3]
+        result['p_qty'] = row[4]
+        result['p_unit'] = row[5]
+        result['p_priceperunit'] = row[6]
+        result['s_fname'] = row[7]
+        result['s_lname'] = row[8]
+        result['ct_type'] = row[9]
+        result[input] = row[10]
+        return result
+
+
+    def build_order_dict(self, row):
         result = {}
         result['o_id'] = row[0]
         result['od_id'] = row[1]
@@ -54,10 +91,12 @@ class peopleHandler:
         result['p_id'] = row[6]
         result['p_name'] = row[7]
         result['pin_id'] = row[8]
-        result['pin_fname']= row[9]
-        result['pin_lname']= row[10]
+        result['pin_fname'] = row[9]
+        result['pin_lname'] = row[10]
         result['c_id'] = row[11]
         result['o_date'] = row[12]
+        result['s_fname'] = row[13]
+        result['s_lname'] = row[14]
         return result
 
     '''return everyone registered as person in need'''
@@ -84,11 +123,11 @@ class peopleHandler:
 
     '''return everyone registered as administrator'''
 
-    def getAllAdminstrators(self):
+    def getAllAdmin(self):
         dao = peopledao()
-        suppliers_list = dao.getAllAdmin()
+        admin_list = dao.getAllAdmin()
         result_list = []
-        for row in suppliers_list:
+        for row in admin_list:
             result = self.build_admin_dict(row)
             result_list.append(result)
         return jsonify(Admins=result_list)
@@ -100,7 +139,7 @@ class peopleHandler:
         orders_list = dao.getAllOrders()
         result_list = []
         for row in orders_list:
-            result = self.build_orderinfo_dict(row)
+            result = self.build_order_dict(row)
             result_list.append(result)
         return jsonify(Orders=result_list)
 
@@ -117,28 +156,22 @@ class peopleHandler:
         elif (len(args) == 1) and s_fname:
             product_list = dao.getProductsBySupplierName(s_fname)
         elif (len(args) == 1) and s_id:
-            product_list = dao.getProductsBySupplierId()
+            product_list = dao.getProductsBySupplierId(s_id)
         else:
             return jsonify(error="malformed query string"), 400
         result_list = []
         for row in product_list:
-            result = self.build_product_dict(row)
+            result = self.build_new_product(row)
             result_list.append(result)
         return jsonify(ProductsBySupplier=result_list)
 
     '''encontrar supplidor por producto'''
 
-    def getSupplierByProduct(self, args):
-        p_id = args.get("p_id")
-        p_name = args.get("p_name")
+    def getSupplierByProduct(self, p_id):
         dao = peopledao()
-        product_list = []
-        if (len(args) == 1) and p_id:
-            product_list = dao.getSupplierByProductId(p_id)
-        elif (len(args) == 1) and p_name:
-            product_list = dao.getSupplierByProductName(p_name)
-        else:
-            return jsonify(error="malformed query string"), 400
+        if not ProductDAO().getProductById(p_id):
+            return jsonify(Error="Product Not Found"), 404
+        product_list = dao.getSupplierByProductId(p_id)
         result_list = []
         for row in product_list:
             result = self.build_supplier_dict(row)
@@ -163,7 +196,7 @@ class peopleHandler:
             return jsonify(error="malformed query string"), 400
         result_list = []
         for row in order_list:
-            result = self.build_orderinfo_dict(row)
+            result = self.build_order_dict(row)
             result_list.append(result)
         return jsonify(OrdersByPersonInNeed=result_list)
 
@@ -186,8 +219,118 @@ class peopleHandler:
         result_list = []
         for row in order_list:
             print(row)
-            result = self.build_orderinfo_dict(row)
+            result = self.build_order_dict(row)
             result_list.append(result)
         return jsonify(OrdersBySupplier=result_list)
 
+    def get_all_products_by_supplier(self):
+        dao = peopledao()
+        product_list = dao.get_all_products_by_supplier()
+        result_list = []
+        for row in product_list:
+            result = self.build_new_product(row)
+            result_list.append(result)
+        return jsonify(Product=result_list)
 
+    def get_all_products_by_city(self, args):
+        dao = peopledao()
+        city = args.get('city')
+        if not city:
+            product_list = dao.get_all_products_by_city()
+        else:
+            product_list = dao.get_all_products_by_city_declared(city)
+        result_list = []
+        for row in product_list:
+            result = self.build_new_product_declared(row, 'city')
+            result_list.append(result)
+        return jsonify(ProductByCity=result_list)
+
+    def get_all_products_by_zipcode(self, args):
+        dao = peopledao()
+        zipcode= args.get('zipcode')
+        if not zipcode:
+            product_list = dao.get_all_products_by_zipcode()
+        else:
+            product_list = dao.get_all_products_by_zipcode_declared(zipcode)
+        result_list = []
+        for row in product_list:
+            result = self.build_new_product_declared(row, 'zipcode')
+            result_list.append(result)
+        return jsonify(ProductByZipcode=result_list)
+
+    def get_all_products_by_country(self, args):
+        dao = peopledao()
+        country = args.get('country')
+        if not country:
+            product_list = dao.get_all_products_by_country()
+        else:
+            product_list = dao.get_all_products_by_country_declared(country)
+        result_list = []
+        for row in product_list:
+            result = self.build_new_product_declared(row, 'country')
+            result_list.append(result)
+        return jsonify(ProductByCountry=result_list)
+
+    def getPINByFirstName(self, args):
+        pin_fname = args.get("pin_fname")
+        dao = peopledao()
+        pin_list = []
+        if ((len(args)) == 1) and pin_fname:
+            pin_list = dao.getPINByFirstName(pin_fname)
+        else:
+            return jsonify(error="malformed query string"), 400
+        result_list = []
+        for row in pin_list:
+            result = self.build_pin_dict(row)
+            result_list.append(result)
+        return jsonify(SupplierByProduct=result_list)
+
+    def get_all_orders(self):
+        dao = peopledao()
+        orders_list = dao.getAllOrders()
+        result_list = []
+        for row in orders_list:
+            result = self.build_order_dict(row)
+            result_list.append(result)
+        return jsonify(Orders=result_list)
+
+    def search_orders(self, args):
+        dao = peopledao()
+        o_id = args.get("o_id")
+        c_id = args.get("c_id")
+        o_date = args.get("o_date")
+        od_qty = args.get("od_qty")
+        od_id = args.get("od_id")
+        od_pprice = args.get("od_pprice")
+        s_id = args.get("s_id")
+        ba_id = args.get("ba_id")
+        p_id = args.get("p_id")
+        pin_id = args.get("pin_id")
+        orders_list = []
+        if len(args) == 1 and o_id:
+            orders_list = dao.filter_orders(o_id, 1)
+        elif len(args) == 1 and o_date:
+            orders_list = dao.filter_orders(o_date, 2)
+        elif len(args) == 1 and c_id:
+            orders_list = dao.filter_orders(c_id, 3)
+        elif len(args) == 1 and od_qty:
+            orders_list = dao.filter_orders(od_qty, 4)
+        elif len(args) == 1 and od_id:
+            orders_list = dao.filter_orders(od_id, 5)
+        elif len(args) == 1 and od_pprice:
+            orders_list = dao.filter_orders(od_pprice, 6)
+        elif len(args) == 1 and s_id:
+            orders_list = dao.filter_orders(s_id, 7)
+        elif len(args) == 1 and ba_id:
+            orders_list = dao.filter_orders(ba_id, 8)
+        elif len(args) == 1 and p_id:
+            orders_list = dao.filter_orders(p_id, 9)
+        elif len(args) == 1 and pin_id:
+            orders_list = dao.filter_orders(pin_id, 10)
+        else:
+            return jsonify(Error="Malformed query string")
+        result_list = []
+        for row in orders_list:
+            result = self.build_order_dict(row)
+            result_list.append(result)
+        return jsonify(Orders=result_list)
