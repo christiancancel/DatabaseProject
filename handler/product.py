@@ -95,15 +95,6 @@ class producthandler:
         result['Customer Name'] = pinfn + " " + pinln
         return result
 
-    def getAllProducts(self):
-        dao = ProductDAO()
-        product_list = dao.getAllProducts()
-        result_list = []
-        for row in product_list:
-            result = self.build_product(row)
-            result_list.append(result)
-        return jsonify(Product=result_list)
-
 
     def get_all_products(self):
         dao = ProductDAO()
@@ -115,15 +106,6 @@ class producthandler:
         return jsonify(Product=result_list)
 
 
-    def getAvailabilityOfProduct(self, p_id):
-        dao = ProductDAO()
-        row = dao.getAvailabilityOfProduct(p_id)
-        if not row:
-            return jsonify(error="product not found"), 404
-        else:
-            print(row)
-            product = self.build_product(row)
-            return jsonify(Product=product)
 
     def getProductById(self, p_id):
         dao = ProductDAO()
@@ -133,56 +115,6 @@ class producthandler:
         else:
             product = self.build_product(row)
             return jsonify(Product=product)
-
-    def getProductByName(self, p_name):
-        dao = ProductDAO()
-        row = dao.getProductByName(p_name)
-        if not row:
-            return jsonify(error="product not found"), 404
-        else:
-            product = self.build_product(row)
-            return jsonify(Product=product)
-
-    def getProductsByQuantity(self, p_qty):
-        dao = ProductDAO()
-        product_list = dao.getProductByQty(p_qty)
-        result_list = []
-        for row in product_list:
-            result = self.build_product(row)
-            result_list.append(result)
-        return jsonify(Product=result_list)
-
-    def findSpecificProduct(self, args):
-        p_id = args.get("p_id")
-        district = args.get("district")
-        dao = ProductDAO()
-        product_list = []
-        if (len(args) == 2) and p_id and district:
-            product_list = dao.findSpecificProduct(p_id, district)
-        else:
-            return jsonify(error="Malformed query string"), 400
-        result_list = []
-        for row in product_list:
-            result = self.build_product(row)
-            result_list.append(result)
-        return jsonify(Product=result_list)
-
-    def browseResourcesAvailable(self):
-        dao = ProductDAO()
-        product_list = dao.browseResourcesAvailable()
-        result_list = []
-        for row in product_list:
-            result = self.build_product(row)
-            result_list.append(result)
-        return jsonify(Product=result_list)
-
-    def VerifyID(self, p_id):
-        dao = ProductDAO()
-        row = dao.getProductById(p_id)
-        if not row:
-            return False
-        else:
-            return True
 
 
     def insert_product(self, form):

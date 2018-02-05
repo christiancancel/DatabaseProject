@@ -10,16 +10,6 @@ class RequestHandler:
         result['r_date'] = row[3]
         return result
 
-#pin_fname, pin_lname, r_pname, r_qty, r_date
-
-    def build_sexo_dict(self, row):
-        result = {}
-        result['pin_fname'] = row[0]
-        result['pin_lname'] = row[1]
-        result['r_pname'] = row[2]
-        result['r_qty'] = row[3]
-        result['r_date'] = row[4]
-        return
 
     def build_dict(self, row):
         result = {}
@@ -55,24 +45,6 @@ class RequestHandler:
     def getAllRequest(self):
         dao = RequestDAO()
         request_list = dao.getAllRequest()
-        result_list = []
-        for row in request_list:
-            result = self.build_request_dict(row)
-            result_list.append(result)
-        return jsonify(Request=result_list)
-
-    def browseResourcesRequested(self):
-        dao = RequestDAO()
-        request_list = dao.browseResourcesRequested()
-        result_list = []
-        for row in request_list:
-            result = self.build_request_dict(row)
-            result_list.append(result)
-        return jsonify(Request=result_list)
-
-    def browseResourcesAvailable(self):
-        dao = RequestDAO()
-        request_list = dao.browseResourcesAvailable()
         result_list = []
         for row in request_list:
             result = self.build_request_dict(row)
